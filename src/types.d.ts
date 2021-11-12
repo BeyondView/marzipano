@@ -796,7 +796,7 @@ declare module 'marzipano' {
 
     switchScene(
       newScene: Scene,
-      opts?: { transitionDuration?: number; transitionUpdate?: number },
+      opts?: SwitchSceneOptions,
       done?: Function
     ): void
 
@@ -1002,7 +1002,9 @@ declare module 'marzipano' {
    */
   interface SwitchSceneOptions {
     transitionDuration?: number
-    transitionUpdate?: number
+    transitionUpdate?: number,
+    wait?: boolean,
+    progress?: ( value: number ) => void
   }
 
   /**
@@ -1196,4 +1198,60 @@ declare module 'marzipano' {
     eventEmitter: (method: Function) => {}
   }
   export const dependencies: Dependencies
+
+  interface convertFov {
+    convert( fov: number, fromDimension: number, toDimension: number ) : number;
+    htov( fov: number, width: number, height: number ) : number;
+    htod( fov: number, width: number, height: number ) : number;
+    vtoh( fov: number, width: number, height: number ) : number;
+    vtod( fov: number, width: number, height: number ) : number;
+    dtoh( fov: number, width: number, height: number ) : number;
+    dtov( fov: number, width: number, height: number ) : number;
+  }
+
+  interface dom {
+    prefixProperty( property: string ) : string;
+    getWithVendorPrefix( property: string ) : ( element: HTMLElement ) => string;
+    setWithVendorPrefix( property: string ) : ( element: HTMLElement, val: string ) => string;
+    setNullTransform( element: HTMLElement ) : void;
+    setNullTransformOrigin( element: HTMLElement ) : void;
+    setAbsolute( element: HTMLElement ) : void;
+    setPixelPosition( element: HTMLElement, x: number, y: number ) : void;
+    setPixelSize( element: HTMLElement, width: number, height: number ) : void;
+    setNullSize( element: HTMLElement ) : void;
+    setFullSize( element: HTMLElement ) : void;
+    setOverflowHidden( element: HTMLElement ) : void;
+    setOverflowVisible( element: HTMLElement ) : void;
+    setNoPointerEvents( element: HTMLElement ) : void;
+  }
+
+  export interface util {
+    async( fn: Function ) : Function;
+    cancelize( fn: Function ) : Function;
+    chain( ...fns: Function[] ) : Function;
+    clamp( value: number, min: number, max: number ) : number;
+    clearOwnProperties( obj: object ) : void;
+    cmp( x: any, y: any ) : number;
+    compose( ...fns: Function[] ) : Function;
+    convertFov: convertFov;
+    decimal( x: number ) : number;
+    defaults( obj: object, defaultsObj: object ) : object;
+    defer( fn: Function, args: any[] ) : void;
+    degToRad( deg: number ) : number;
+    delay( ms: number, done: Function ) : Function;
+    dom: dom;
+    extend( obj: object, sourceObj: object ) : object;
+    hash( ...values: number[] ) : number;
+    inherits( ctor: Function, superCtor: Function ) : void;
+    mod( a: number, b: number ) : number;
+    noop() : void;
+    now() : number;
+    once( fn: Function ) : Function;
+    pixelRatio() : number;
+    radToDeg( rad: number ) : number;
+    real( x: number ) : number;
+    retry( fn: Function ) : Function;
+    tween( duration: number, update: Function, done: Function ) : Function;
+    type( any ) : string;
+  }
 }
