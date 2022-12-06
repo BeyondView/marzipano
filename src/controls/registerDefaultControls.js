@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-'use strict';
+
 
 var defaults = require('../util/defaults');
 var DragControlMethod = require('./Drag');
@@ -24,7 +24,8 @@ var KeyControlMethod = require('./Key');
 
 var defaultOptions = {
   mouseViewMode: 'drag',
-  dragMode: 'pan'
+  dragMode: 'pan',
+  keyVelocity: 0.7
 };
 
 /**
@@ -44,6 +45,7 @@ var defaultOptions = {
  * @param {Element} element Element to listen for events.
  * @param {'drag'|'qtvr'} opts.mouseViewMode
  * @param {'pan'|'pinch'} opts.dragMode
+ * @param {number} opts.keyVelocity
  * @param {boolean} opts.scrollZoom
  */
 function registerDefaultControls(controls, element, opts) {
@@ -53,38 +55,38 @@ function registerDefaultControls(controls, element, opts) {
     mouseViewDrag: new DragControlMethod(element, 'mouse'),
     mouseViewQtvr: new QtvrControlMethod(element, 'mouse'),
 
-    leftArrowKey: new KeyControlMethod(37, 'x', -0.7, 3),
-    rightArrowKey: new KeyControlMethod(39, 'x', 0.7, 3),
-    upArrowKey: new KeyControlMethod(38, 'y', -0.7, 3),
-    downArrowKey: new KeyControlMethod(40, 'y', 0.7, 3),
-    plusKey: new KeyControlMethod(107, 'zoom', -0.7, 3),
-    minusKey: new KeyControlMethod(109, 'zoom', 0.7, 3),
+    leftArrowKey: new KeyControlMethod(37, 'x', -opts.keyVelocity, 3),
+    rightArrowKey: new KeyControlMethod(39, 'x', -opts.keyVelocity, 3),
+    upArrowKey: new KeyControlMethod(38, 'y', -opts.keyVelocity, 3),
+    downArrowKey: new KeyControlMethod(40, 'y', opts.keyVelocity, 3),
+    plusKey: new KeyControlMethod(107, 'zoom', -opts.keyVelocity, 3),
+    minusKey: new KeyControlMethod(109, 'zoom', opts.keyVelocity, 3),
 
-    wKey: new KeyControlMethod(87, 'y', -0.7, 3),
-    aKey: new KeyControlMethod(65, 'x', -0.7, 3),
-    sKey: new KeyControlMethod(83, 'y', 0.7, 3),
-    dKey: new KeyControlMethod(68, 'x', 0.7, 3),
-    qKey: new KeyControlMethod(81, 'roll', 0.7, 3),
-    eKey: new KeyControlMethod(69, 'roll', -0.7, 3)
+    wKey: new KeyControlMethod(87, 'y', -opts.keyVelocity, 3),
+    aKey: new KeyControlMethod(65, 'x', -opts.keyVelocity, 3),
+    sKey: new KeyControlMethod(83, 'y', opts.keyVelocity, 3),
+    dKey: new KeyControlMethod(68, 'x', opts.keyVelocity, 3),
+    qKey: new KeyControlMethod(81, 'roll', opts.keyVelocity, 3),
+    eKey: new KeyControlMethod(69, 'roll', -opts.keyVelocity, 3)
   };
 
-  var enabledControls = ['scrollZoom', 'touchView', 'pinch' ];
+  var enabledControls = ['scrollZoom', 'touchView', 'pinch'];
 
   if (opts.scrollZoom !== false) {
     controlMethods.scrollZoom = new ScrollZoomControlMethod(element); //{ frictionTime: 0 }
   }
 
   var controlMethodGroups = {
-    arrowKeys: [ 'leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey' ],
-    plusMinusKeys: [ 'plusKey', 'minusKey' ],
-    wasdKeys: [ 'wKey', 'aKey', 'sKey', 'dKey' ],
-    qeKeys: [ 'qKey', 'eKey' ]
+    arrowKeys: ['leftArrowKey', 'rightArrowKey', 'upArrowKey', 'downArrowKey'],
+    plusMinusKeys: ['plusKey', 'minusKey'],
+    wasdKeys: ['wKey', 'aKey', 'sKey', 'dKey'],
+    qeKeys: ['qKey', 'eKey']
   };
 
 
   switch (opts.dragMode) {
     case 'pinch':
-       controlMethods.pinch = new DragControlMethod(element, 'touch', { hammerEvent: 'pinch' });
+      controlMethods.pinch = new DragControlMethod(element, 'touch', { hammerEvent: 'pinch' });
       break;
     case 'pan':
       controlMethods.touchView = new DragControlMethod(element, 'touch');
