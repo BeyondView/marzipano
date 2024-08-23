@@ -732,16 +732,17 @@ Viewer.prototype.switchScene = function(newScene, opts, done) {
       self._replacedScene = null;
     }
     self._cancelCurrentTween = null;
-    done();
+    // Add extra time to ensure the scene is fully visible
+    setTimeout( done, duration );
   }
 
   function tweenLayers() {
-    // Store the cancelable for the transition.
-    self._cancelCurrentTween = tween(duration, tweenUpdate, tweenDone);
-
     // Update the current and replaced scene.
     self._currentScene = newScene;
     self._replacedScene = oldScene;
+
+    // Store the cancelable for the transition.
+    self._cancelCurrentTween = tween(duration, tweenUpdate, tweenDone);
 
     // Emit scene and view change events.
     self.emit('sceneChange');
@@ -802,7 +803,6 @@ Viewer.prototype.switchScene = function(newScene, opts, done) {
         this._removeLayerFromStage(newSceneLayers[i]);
       }
       opts.progress && opts.progress(1);
-      done();
     };
     sceneLayer.addEventListener('renderComplete', onRenderComplete);
   }
